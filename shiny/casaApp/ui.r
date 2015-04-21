@@ -6,7 +6,7 @@ shinyUI(fluidPage(
             selectInput("var", 
                 label = "Seleccione una variable para mostrar",
                 choices = list("Temperatura del aire", "Humedad relativa",
-                "Radiacion solar", "Presion atmosferica"),
+                "Radiacion solar", "Presion atmosferica","Viento"),
                 selected = "Temperatura del aire"),
             dateRangeInput("dates", label = "Rango de fechas", 
                 format= "yyyy/mm/dd", end=Sys.Date()+1)
