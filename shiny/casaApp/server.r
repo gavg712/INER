@@ -1,3 +1,4 @@
+source("helpers.r")
 shinyServer(function(input, output) {
     output$text1 <- renderText({ paste("Seleccionaste la variable", 
                                         input$var," para las fechas entre",
