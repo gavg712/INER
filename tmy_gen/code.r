@@ -153,4 +153,6 @@ TMYdata<-TMYdata[order(format(TMYdata$date, "%m")),]
 
 #Exportar a la tabla en formato CSV
 write.table(TMYdata, "TMYrawdata.csv", sep=",",row.names = FALSE)
+write.table(selecYear[order(selecYear$monthnum),3], "Selected_Months.csv", 
+            sep=",",row.names = FALSE, col.names="Month")
 print(paste("Tiempo de procesamiento:",difftime(Sys.time(),initime,units="secs"), "seg"))
