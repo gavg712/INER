@@ -3,10 +3,10 @@
 ##and interest. Don't change the name of this file.
 
 #Period and timing
-year_from = 2009
-year_to = 2012
+year_from = 2008
+year_to = 2013
 hours_per_year = 8760
-total_variables = 6
+total_variables = 5
 #column numbers
 date_time_column_number = 1
 temperature_column_number = 2

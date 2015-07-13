@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 rm(list=ls())
 library(tcltk)
 setwd(tclvalue(tkchooseDirectory()))
@@ -69,7 +70,7 @@ for (i in 2:10){
 
 ##Calcular estadistico FS para cada mes
 #Calcular diferencias de CDF de cada año con cdf año medio y recostruir tabla
-cdfdiff <- dailycdf-rbind(dailycdfmean, dailycdfmean,dailycdfmean,dailycdfmean)
+cdfdiff <- dailycdf-dailycdfmean[rep(seq_len(nrow(dailycdfmean)), year_to-year_from+1), ]
 cdfdiff <- as.data.frame(cdfdiff)
 names(cdfdiff)<-colnames[-1]
 cdfdiff$date <- dailydata$date
@@ -149,10 +150,20 @@ selecYear <- merge(wsxselect, selecMonth[,c(2,6)], by="wsx", all.x=TRUE)
 
 #Consulta de datos originales por meses tipicos
 TMYdata <- data[data$month %in% selecYear$month, 1:(total_variables+1)]
-TMYdata<-TMYdata[order(format(TMYdata$date, "%m")),]
+TMYdata<-TMYdata[order(format(TMYdata[,date_time_column_number], "%m")),]
+
+#Ajuste de los 5 valores antes y despues del cambio de mes
+TMYdataFinal<-TMYdata[order(format(TMYdata[,date_time_column_number], "%m")),]
+monthChanges <- c(744,1416,2160,2880, 3624, 4344, 5088, 5832, 6552, 7296, 8016)
+movingAverage <- function(x,n=5){filter(x,rep(1/n,n), sides=2)}
+TMYdataavg <- sapply(TMYdataFinal[,2:3], movingAverage)
+for (i in 1:length(monthChanges)){
+TMYdataFinal[(monthChanges[i]-5):(monthChanges[i]+5),2:3]<-TMYdataavg[(monthChanges[i]-5):(monthChanges[i]+5),]
+}
 
 #Exportar a la tabla en formato CSV
-write.table(TMYdata, "TMYrawdata.csv", sep=",",row.names = FALSE)
 write.table(selecYear[order(selecYear$monthnum),3], "Selected_Months.csv", 
             sep=",",row.names = FALSE, col.names="Month")
+write.table(TMYdata, "TMYrawdata.csv", sep=",",row.names = FALSE)
+write.table(TMYdataFinal, "TMYfinaldata.csv", sep=",",row.names = FALSE)
 print(paste("Tiempo de procesamiento:",difftime(Sys.time(),initime,units="secs"), "seg"))
